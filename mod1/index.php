@@ -449,7 +449,7 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 					foreach ($this->filesFoldersFS as $curEntry){
 						//filter out trash folders and files
 						//!TODO: There is a bug here!!!
-						if (!empty($excludeTrashPath) && false !== strpos($curEntry,$excludeTrashPath)){
+						if (!empty($excludeTrashPath) && false !== strpos($excludeTrashPath,$curEntry)){
 							continue;
 						}
 						if (substr($curEntry,-1,1) === '/'){ //its a path
