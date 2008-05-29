@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module &quot;web_txfileexplorercheckM1&quot; - header, description</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mlang_tabs_tab">File Explorer</label>
+			<label index="mlang_labels_tabdescr">Checks the consistency of file explorer and lets you fix files that are not in database or vice versa.</label>
+			<label index="mlang_labels_tablabel">File Explorer consistency check</label>
+		</languageKey>
+	</data>
+</T3locallang>

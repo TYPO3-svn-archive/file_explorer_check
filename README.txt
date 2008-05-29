@@ -1,2 +1,1 @@
-
-Feel free to add some documentation or simply add a link to the online manual.
+Read the online manual or the sxw file in the doc folder.
