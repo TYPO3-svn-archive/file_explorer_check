@@ -34,6 +34,25 @@ require_once(PATH_t3lib.'class.t3lib_scbase.php');
 $BE_USER->modAccess($MCONF,1);	// This checks permissions and exits if the users has no permission for entry.
 	// DEFAULT initialization of a module [END]
 
+if (@is_dir(PATH_site.'typo3/sysext/cms/tslib/')) {
+        define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/');
+} elseif (@is_dir(PATH_site.'tslib/')) {
+        define('PATH_tslib', PATH_site.'tslib/');
+} else {
+
+        // define path to tslib/ here:
+        $configured_tslib_path = '';
+
+        // example:
+        // $configured_tslib_path = '/var/www/mysite/typo3/sysext/cms/tslib/';
+
+        define('PATH_tslib', $configured_tslib_path);
+}
+
+if (PATH_tslib=='') {
+        die('Cannot find tslib/. Please set path by defining $configured_tslib_path in '.t3lib_extMgm::extPath('file_explorer_check').'mod1/index.php, on line 45.');
+}
+
 require_once (PATH_t3lib.'class.t3lib_page.php');
 require_once (PATH_t3lib.'class.t3lib_tstemplate.php');
 require_once (PATH_t3lib.'class.t3lib_tsparser_ext.php');
@@ -172,6 +191,18 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 					$newClass = t3lib_div::makeInstanceClassName('tx_fileexplorer_pi1');
 					$fileExpObj = new $newClass($this);
 					$this->loadTS($_GET['id']);
+
+					//some sanity checking
+
+					if (empty($this->conf['upload_folder'])){
+						$content .= '<strong><span style="color:red;">Warning: Your upload folder setting is empty. Make sure that this is set in TS on the root page storage folder (Page with id: '.$_GET['id'].').</span></strong><br/>';
+					}
+
+
+					if (!(substr($this->conf['upload_folder'],-1,1) === "/")){
+						$this->conf['upload_folder'] = $this->conf['upload_folder'].'/';
+					}
+
 // 					$fileExpObj->conf = $this->conf;
 //  					$fileExpObj->initFlexform();
 // 					$fileExpObj->setVariousConfValues();
@@ -321,6 +352,7 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 				}
 
 				function doTheCheck(){
+
 					$this->folders = array();
 					$this->files = array();
 					$this->getFolderFileStructureFromDB($_GET['id']);
@@ -339,16 +371,16 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 					$this->okFilesFS = array();
 					$this->checkFilesFS();
 
-// 					echo "<br>ok files";
+//  					echo "<br>ok files";
 // 					echo t3lib_div::view_array($this->okFilesFS);
 // 					echo "<br>missing files on fs";
 // 					echo t3lib_div::view_array($this->missingFilesFS);
 
 					$this->filesFS = array();
 					$this->foldersFS = array();
-					$this->getFolderFileStructureFromFS();
+ 					$this->getFolderFileStructureFromFS();
 // 					echo t3lib_div::view_array($this->filesFS);
-// 					echo "watch";
+//  					echo "watch";
 // 					echo t3lib_div::view_array($this->foldersFS);
 
 					$this->missingFoldersDB = array();
