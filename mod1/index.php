@@ -210,6 +210,7 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 //  					$content .=t3lib_div::view_array($fileExpObj->conf);
 					require_once(t3lib_extMgm::extPath('file_explorer')."pi1/classes/class.tx_fileexplorer_data.php");
 					$newClass = t3lib_div::makeInstanceClassName('tx_fileexplorer_data');
+					$this->conf['root_page'] = $_GET['id'];
 					$this->handleData = new $newClass($this);
 
 					switch((string)$this->MOD_SETTINGS['function'])	{
@@ -548,13 +549,13 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 				function removeFromDB(){
 					foreach($this->missingFoldersFS as $curFolder){
 						$this->verbose .= '<br/>Deleting folder record of not existing folder: '.$curFolder['fullPath'];
-						$this->handleData->deleteFolder($curFolder['uid'],false);
+						$sql = "DELETE FROM `pages` WHERE uid = ".$curFolder['uid'];
+						$GLOBALS['TYPO3_DB']->sql_query($sql);
 					}
-
 					foreach($this->missingFilesFS as $curFile){
-// 						print_r($curFile);
 						$this->verbose .= '<br/>Deleting file record of not existing file: '.$curFile['fname'];
-						$this->handleData->deleteFile($curFile['uid'],false);
+						$sql = "DELETE FROM `tx_fileexplorer_files` WHERE uid = ".$curFile['uid'];
+						$GLOBALS['TYPO3_DB']->sql_query($sql);
 					}
 				}
 
@@ -567,7 +568,7 @@ class  tx_fileexplorercheck_module1 extends t3lib_SCbase {
 							$this->verbose .= '<br/>Could not delete file from fs: '.$curFile;
 						}
 					}
-					$this->missingFoldersFS = array_reverse($this->missingFoldersFS);
+					$this->missingFoldersDB = array_reverse($this->missingFoldersDB);
 					foreach ($this->missingFoldersDB as $curFolder){
 						if (rmdir($curFolder)){
 							$this->verbose .= '<br/>Successfully deleted folder from fs: '.$curFolder;
